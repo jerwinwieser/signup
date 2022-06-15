@@ -19,6 +19,10 @@ redirect_view = 'survey_list'
 
 class SurveyListView(ListView):
     model = models.Survey
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['question_list'] = models.Question.objects.all()
+        return context
 
 class SurveyCreateView(BSModalCreateView):
     template_name = 'core/survey_create.html'
@@ -75,7 +79,7 @@ class QuestionDeleteView(DeleteView):
     fields = '__all__'
     success_url = reverse_lazy(redirect_view)
 
-def SubmissionCreateView(request, surv_id):
+def submission_create(request, surv_id):
     questions = models.Question.objects.filter(survey_id=surv_id)
     SubmissionFormSet = modelformset_factory(models.Submission, form=forms.SubmissionForm, extra=questions.count())
     initial_values = [{'question': id} for id in questions.values_list('pk', flat=True)]
@@ -84,28 +88,26 @@ def SubmissionCreateView(request, surv_id):
     question_pk = questions.values_list('pk', flat=True)
     question_text = questions.values_list('text', flat=True)
     question_type = questions.values_list('type', flat=True)
-
-    # hash = hashlib.sha1()
-    # hash = 'abc123'
-    # print(hash)
-
     if request.method == 'post':
         formset = SubmissionFormSet(request.POST)
         if formset.is_valid():
+            print('form valid')
             index = 0
             for form in formset:
                 question_id = question_pk[index]
                 question = models.Question.objects.get(id=question_id)
+                print(question)
                 form.instance.question = question
                 form.save()
                 index += 1
             return render(request, 'core/submission_list.html')
+        else:
+            print('form not valid')
     context = {
         'question_text': question_text,
         'question_type': question_type,
         'formset': formset,
     }
-    # return render(request, 'core/submission.html', context)
     return render(request, 'core/submission_create.html', context)
 
 class SubmissionListView(ListView):

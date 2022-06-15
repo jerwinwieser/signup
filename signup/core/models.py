@@ -17,7 +17,7 @@ class Question(models.Model):
         (CHARFIELD, ("charfield")),
         (INTEGERFIELD, ("integerfield")),
     )
-    survey = models.ForeignKey(Survey, on_delete=models.CASCADE, null=True,  editable=False)
+    survey = models.ForeignKey(Survey, on_delete=models.CASCADE, null=True,  editable=True)
     type = models.CharField(max_length=200, choices=QUESTION_TYPES, default=CHARFIELD)
     text = models.CharField(max_length=255)
     def __str__(self):
@@ -26,8 +26,7 @@ class Question(models.Model):
 #one question can have multiple submissions
 #one answer can have multiple submissions and one submission can have multiple answers
 class Submission(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE, null=False, editable=False)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, null=False, editable=True)
     answer = models.CharField(max_length=255)
-    # bash = models.CharField(max_length=10, default='defaulthash', unique=False)
     def __str__(self):
         return self.answer
