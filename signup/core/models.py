@@ -23,11 +23,17 @@ class Question(models.Model):
     def __str__(self):
         return self.text
 
+# class Set(models.Model):
+#     hash = models.CharField(max_length=10, default='set1234567', unique=False)
+#     def __str__(self):
+#         return self.hash
+
 #one question can have multiple submissions
 #one answer can have multiple submissions and one submission can have multiple answers
 class Submission(models.Model):
+    # set = models.ForeignKey(Set, on_delete=models.CASCADE, null=False, editable=True)
     question = models.ForeignKey(Question, on_delete=models.CASCADE, null=False, editable=True)
     answer = models.CharField(max_length=255)
-    hash = models.CharField(max_length=10, default='def1234567', unique=False)
+    hash = models.CharField(max_length=10, default='sub1234567', unique=False)
     def __str__(self):
         return self.answer

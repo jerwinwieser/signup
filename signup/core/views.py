@@ -10,10 +10,9 @@ from django.shortcuts import render
 from core import models
 from core import forms
 
-import time
-import hashlib
-import random
 import uuid
+
+from django.db.models import Count
 
 from bootstrap_modal_forms.generic import BSModalReadView, BSModalCreateView, BSModalDeleteView, BSModalFormView, BSModalUpdateView
 
@@ -115,4 +114,8 @@ class SubmissionListView(ListView):
         context = super().get_context_data(**kwargs)
         context['survey_list'] = models.Survey.objects.all()
         context['question_list'] = models.Question.objects.all()
+        # set = models.Submission.objects.all().values('question').annotate(total=Count('actor')).order_by('total')
+        set = models.Submission.objects.all().values('question__survey__title').annotate(count=Count('hash', distinct=True))
+        print(set)
+        context['set_list'] = set
         return context
