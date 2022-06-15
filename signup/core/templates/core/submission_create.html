@@ -1,0 +1,23 @@
+{% extends 'core/base.html' %}
+
+{% load index %}
+
+{% block content %}
+
+<form method="post">
+    {{ formset.management_form }}
+    {% csrf_token %}
+
+    <div class="form-group">
+    {% for form in formset %}
+    ({{ question_type|index:forloop.counter0 }}) {{ question_text|index:forloop.counter0 }}<br>
+        {% for field in form %}
+            {{ field }}
+        {% endfor %}
+    {% endfor %}
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-2">Save</button>
+</form>
+
+{% endblock content %}

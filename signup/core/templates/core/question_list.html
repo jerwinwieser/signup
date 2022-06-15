@@ -1,0 +1,16 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+<h2 class="display-6 text-center mb-4">Questions</h2>
+
+<ul>
+    {% for question in question_list %}
+    <li>
+        {{ question.text }} |
+        <a href="{% url 'question_delete' question.pk %}">delete</a>
+    </li>
+    {% endfor %}
+</ul>
+
+{% endblock content %}

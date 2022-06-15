@@ -1,0 +1,92 @@
+{% extends 'core/base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="modal fade" tabindex="-1" role="dialog" id="modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content"></div>
+    </div>
+</div>
+
+<h2 class="display-6 text-center mb-4">Survey: {{ survey.title }}</h2>
+
+<div class="list-group mb-4">
+    {% for question in survey.question_set.all %}
+        <button type="button" class="survey-update bs-modal list-group-item list-group-item-action" data-form-url="{% url 'question_update' question.pk %}">{{ question.text }} ({{ question.type }})</button>
+    {% endfor %}
+</div>
+
+<div class="list-group mt-4">
+    <button type="button" class="survey-update bs-modal list-group-item list-group-item-action active" data-form-url="{% url 'survey_update' survey.pk %}">Survey update</button>
+    <button type="button" class="survey-delete bs-modal list-group-item list-group-item-action active" data-form-url="{% url 'survey_delete' survey.pk %}">Survey delete</button>
+</div>
+
+<div class="list-group mt-4">
+    <button id="question-create" class="list-group-item list-group-item-action active" type="button" name="button">Question add</button>
+</div>
+
+<div class="list-group mt-4">
+    <a href="{% url 'submission_create' survey.pk %}" class="list-group-item list-group-item-action active">Submission add</a>
+</div>
+
+<script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'js/popper.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
+
+<script type="text/javascript">
+    
+    $(function () {
+        $("#question-create").modalForm({
+            formURL: "{% url 'question_create' survey.pk %}"
+        });
+
+    var asyncSuccessMessage = [
+    "<div ",
+    "style='position:fixed;top:0;z-index:10000;width:100%;border-radius:0;' ",
+    "class='alert alert-icon alert-success alert-dismissible fade show mb-0' role='alert'>",
+    "Success: Approach was updated.",
+    "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>",
+    "<span aria-hidden='true'>&times;</span>",
+    "</button>",
+    "</div>",
+    "<script>",
+        "$('.alert').fadeTo(2000, 500).slideUp(500, function () {$('.alert').slideUp(500).remove();});",
+        "<\/script>"
+        ].join("");
+        
+        function updateQuestionModalForm() {
+            $(".question-update").each(function () {
+                $(this).modalForm({
+                    formURL: $(this).data("form-url"),
+                    asyncUpdate: true,
+                    asyncSettings: {
+                        closeOnSubmit: true,
+                        successMessage: asyncSuccessMessage,
+                        dataUrl: "tables/",
+                        dataElementId: "#question",
+                        dataKey: "table",
+                        addModalFormFunction: updateQuestionModalForm
+                    }
+                });
+            });
+        }
+        updateQuestionModalForm();
+        
+        // Read and Delete person buttons open modal with id="modal"
+        // The formURL is retrieved from the data of the element
+        $(".bs-modal").each(function () {
+            $(this).modalForm({formURL: $(this).data("form-url")});
+        });
+        
+        // Hide message
+        $(".alert").fadeTo(2000, 500).slideUp(500, function () {
+            $(".alert").slideUp(500);
+        });
+    });
+
+</script>
+
+{% endblock content %}

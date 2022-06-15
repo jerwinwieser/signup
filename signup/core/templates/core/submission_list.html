@@ -1,0 +1,19 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+<h2 class="display-6 text-center mb-4">Submissions</h2>
+
+<ol class="list-group">
+    {% for submission in submission_list %}
+    <li class="list-group-item d-flex justify-content-between align-items-start">
+        <div class="ms-2 me-auto">
+            <div class="fw-bold">{{ submission.question.text }}</div>
+            {{ submission.answer }}
+        </div>
+        <span class="badge bg-primary rounded-pill">{{ submission.question.survey.title }}</span>
+    </li>
+    {% endfor %}
+</ol>
+
+{% endblock content %}

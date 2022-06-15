@@ -1,0 +1,25 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+<h2 class="display-6 text-center mb-4">Surveys</h2>
+
+<div class="list-group">
+    {% for survey in survey_list %}
+    <a href="{% url 'survey_detail' survey.pk %}" class="list-group-item list-group-item-action">
+        <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{ survey.title }}</h5>
+            <small class="text-muted">questions: {{ survey.question_set.count }}</small>
+        </div>
+        <p class="mb-1">Some placeholder content in a paragraph.</p>
+        <small class="text-muted">And some muted small print.</small>
+        <span class="badge bg-secondary rounded-pill">{{ survey.question.submission_set.count }}</span>
+    </a>
+    {% endfor %}
+</div>
+
+<div class="list-group mt-4">
+    <button id="survey-create" class="list-group-item list-group-item-action active" type="button" name="button">Survey add</button>
+</div>
+
+{% endblock content %}
