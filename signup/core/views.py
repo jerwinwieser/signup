@@ -10,6 +10,9 @@ from django.shortcuts import render
 from core import models
 from core import forms
 
+import time
+import hashlib
+
 from bootstrap_modal_forms.generic import BSModalReadView, BSModalCreateView, BSModalDeleteView, BSModalFormView, BSModalUpdateView
 
 redirect_view = 'survey_list'
@@ -49,6 +52,7 @@ class QuestionCreateView(BSModalCreateView):
     def get_initial(self):
         initial = super(QuestionCreateView, self).get_initial()
         initial['survey'] = self.kwargs.get('surv_id')
+        print(initial)
         return initial
 
 class QuestionListView(ListView):
@@ -56,7 +60,6 @@ class QuestionListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         surv_id = self.kwargs.get('surv_id')
-        print(surv_id)
         context['question_list'] = models.Question.objects.filter(survey_id=surv_id)
         return context
 
@@ -82,6 +85,10 @@ def SubmissionCreateView(request, surv_id):
     question_text = questions.values_list('text', flat=True)
     question_type = questions.values_list('type', flat=True)
 
+    # hash = hashlib.sha1()
+    # hash = 'abc123'
+    # print(hash)
+
     if request.method == 'post':
         formset = SubmissionFormSet(request.POST)
         if formset.is_valid():
@@ -98,7 +105,13 @@ def SubmissionCreateView(request, surv_id):
         'question_type': question_type,
         'formset': formset,
     }
-    return render(request, 'core/submission.html', context)
+    # return render(request, 'core/submission.html', context)
+    return render(request, 'core/submission_create.html', context)
 
 class SubmissionListView(ListView):
     model = models.Submission
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['survey_list'] = models.Survey.objects.all()
+        context['question_list'] = models.Question.objects.all()
+        return context

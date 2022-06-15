@@ -1,4 +1,7 @@
 from django.db import models
+import uuid
+import time
+import hashlib
 
 #one user should be able to create multiple surveys
 class Survey(models.Model):
@@ -25,5 +28,6 @@ class Question(models.Model):
 class Submission(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, null=False, editable=False)
     answer = models.CharField(max_length=255)
+    # bash = models.CharField(max_length=10, default='defaulthash', unique=False)
     def __str__(self):
         return self.answer

@@ -21,9 +21,10 @@ class QuestionForm(BSModalModelForm):
     def __init__(self, *args, **kwargs):
         super(QuestionForm, self).__init__(*args, **kwargs)
         for visible in self.visible_fields():
-            visible.field.widget.attrs['class'] = 'form-select'
+            visible.field.widget.attrs['class'] = 'form-control'
             visible.field.widget.attrs['type'] = 'text'
-            visible.field.widget.attrs['placeholder'] = 'Placeholder'
+            # visible.field.widget.attrs['class'] = 'form-select'
+            # visible.field.widget.attrs['placeholder'] = 'Placeholder'
 
 class SubmissionForm(forms.ModelForm):
     class Meta:
@@ -34,7 +35,7 @@ class SubmissionForm(forms.ModelForm):
         for visible in self.visible_fields():
             visible.field.widget.attrs['class'] = 'form-control'
             visible.field.widget.attrs['type'] = 'text'
-            visible.field.widget.attrs['placeholder'] = 'Placeholder'
+            # visible.field.widget.attrs['placeholder'] = 'Placeholder'
 
 # SubmissionFormSet = formset_factory(
 #     SubmissionForm,

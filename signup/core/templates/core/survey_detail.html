@@ -10,11 +10,16 @@
     </div>
 </div>
 
-<h2 class="display-6 text-center mb-4">Survey: {{ survey.title }}</h2>
+<h2 class="display-6 text-center mb-4">Survey: {{ survey.title }} {{ survey.pk }}</h2>
 
-<div class="list-group mb-4">
+<div class="list-group">
     {% for question in survey.question_set.all %}
-        <button type="button" class="survey-update bs-modal list-group-item list-group-item-action" data-form-url="{% url 'question_update' question.pk %}">{{ question.text }} ({{ question.type }})</button>
+    <button type="button" class="survey-update bs-modal list-group-item list-group-item-action" data-form-url="{% url 'question_update' question.pk %}">
+        <div class="d-flex w-100 justify-content-between">
+            <small class="text-muted">{{ question.type }}</small>
+        </div>
+        <p class="mb-1">{{ question.text }}</p>
+    </button>
     {% endfor %}
 </div>
 
@@ -37,12 +42,23 @@
 <script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
 
 <script type="text/javascript">
-    
-    $(function () {
-        $("#question-create").modalForm({
-            formURL: "{% url 'question_create' survey.pk %}"
-        });
+$(function () {
+    $("#survey-create").modalForm({
+        formURL: "{% url 'survey_create' %}"
+    });
 
+    $("#question-create").modalForm({
+        formURL: "{% url 'question_create' survey.pk %}"
+    });
+
+    $(".survey-read").each(function () {
+        $(this).modalForm({formURL: $(this).data("form-url")});
+    });
+    
+    $(".survey-delete").each(function () {
+        $(this).modalForm({formURL: $(this).data("form-url"), isDeleteForm: true});
+    });
+    
     var asyncSuccessMessage = [
     "<div ",
     "style='position:fixed;top:0;z-index:10000;width:100%;border-radius:0;' ",
@@ -57,8 +73,8 @@
         "<\/script>"
         ].join("");
         
-        function updateQuestionModalForm() {
-            $(".question-update").each(function () {
+        function updateSurveyModalForm() {
+            $(".survey-update").each(function () {
                 $(this).modalForm({
                     formURL: $(this).data("form-url"),
                     asyncUpdate: true,
@@ -66,14 +82,14 @@
                         closeOnSubmit: true,
                         successMessage: asyncSuccessMessage,
                         dataUrl: "tables/",
-                        dataElementId: "#question",
+                        dataElementId: "#survey",
                         dataKey: "table",
-                        addModalFormFunction: updateQuestionModalForm
+                        addModalFormFunction: updateSurveyModalForm
                     }
                 });
             });
         }
-        updateQuestionModalForm();
+        updateSurveyModalForm();
         
         // Read and Delete person buttons open modal with id="modal"
         // The formURL is retrieved from the data of the element
@@ -86,7 +102,6 @@
             $(".alert").slideUp(500);
         });
     });
-
 </script>
 
 {% endblock content %}
