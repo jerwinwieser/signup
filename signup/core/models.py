@@ -28,5 +28,6 @@ class Question(models.Model):
 class Submission(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, null=False, editable=True)
     answer = models.CharField(max_length=255)
+    hash = models.CharField(max_length=10, default='def1234567', unique=False)
     def __str__(self):
         return self.answer

@@ -12,6 +12,8 @@ from core import forms
 
 import time
 import hashlib
+import random
+import uuid
 
 from bootstrap_modal_forms.generic import BSModalReadView, BSModalCreateView, BSModalDeleteView, BSModalFormView, BSModalUpdateView
 
@@ -84,25 +86,22 @@ def submission_create(request, surv_id):
     SubmissionFormSet = modelformset_factory(models.Submission, form=forms.SubmissionForm, extra=questions.count())
     initial_values = [{'question': id} for id in questions.values_list('pk', flat=True)]
     formset = SubmissionFormSet(queryset=models.Submission.objects.none(), initial=initial_values)
-
     question_pk = questions.values_list('pk', flat=True)
     question_text = questions.values_list('text', flat=True)
     question_type = questions.values_list('type', flat=True)
-    if request.method == 'post':
+    hash = uuid.uuid4().hex
+    if request.method == 'POST':
         formset = SubmissionFormSet(request.POST)
         if formset.is_valid():
-            print('form valid')
             index = 0
             for form in formset:
                 question_id = question_pk[index]
                 question = models.Question.objects.get(id=question_id)
-                print(question)
+                form.instance.hash = hash
                 form.instance.question = question
                 form.save()
                 index += 1
             return render(request, 'core/submission_list.html')
-        else:
-            print('form not valid')
     context = {
         'question_text': question_text,
         'question_type': question_type,
