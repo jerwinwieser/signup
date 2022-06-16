@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'core',
     'bootstrap_modal_forms',
     'widget_tweaks',
+    'django_pivot',
 ]
 
 MIDDLEWARE = [

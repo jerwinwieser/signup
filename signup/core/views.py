@@ -12,9 +12,11 @@ from core import forms
 
 import uuid
 
-from django.db.models import Count
-
 from bootstrap_modal_forms.generic import BSModalReadView, BSModalCreateView, BSModalDeleteView, BSModalFormView, BSModalUpdateView
+
+from django.db.models import Count
+from django_pivot.pivot import pivot
+from django_pivot.histogram import histogram
 
 redirect_view = 'survey_list'
 
@@ -125,10 +127,20 @@ class SubmissionListViewAggregate(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         surv_id = self.kwargs.get('surv_id')
+        set = models.Submission.objects.all().values('question__survey__title').annotate(count=Count('hash', distinct=True))
+        survey_set = models.Submission.objects.filter(question__survey__id=surv_id)
+        survey_set_wide = pivot(survey_set, 'hash', 'question__text', 'answer')
+
+        survery_set_distinct = models.Submission.objects.filter(question__survey__id=surv_id).order_by('hash').values('hash').distinct()
+        survery_set_distinct_name = models.Survey.objects.filter(id=surv_id).order_by('title').values('title').distinct()
+        print(survery_set_distinct_name)
+
+        context['survery_set_distinct'] = survery_set_distinct
+        context['survery_set_distinct_name'] = survery_set_distinct_name
+
         context['survey_list'] = models.Survey.objects.all()
         context['question_list'] = models.Question.objects.all()
-        set = models.Submission.objects.all().values('question__survey__title').annotate(count=Count('hash', distinct=True))
         context['set_list'] = set
-        survey_set = models.Submission.objects.filter(question__survey__id=surv_id)
         context['survey_set_list'] = survey_set
+        context['survey_set_list_wide'] = survey_set_wide
         return context
