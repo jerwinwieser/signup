@@ -4,7 +4,7 @@
 
 <h2 class="display-6 text-center mb-4">Surveys</h2>
 
-<div class="list-group">
+<div class="list-group mb-4">
     {% for survey in survey_list %}
     <a href="{% url 'survey_detail' survey.pk %}" class="list-group-item list-group-item-action">
         <div class="d-flex w-100 justify-content-between">
@@ -18,8 +18,14 @@
     {% endfor %}
 </div>
 
-<div class="list-group mt-4">
+<div class="list-group mb-4">
     <button id="survey-create" class="list-group-item list-group-item-action active" type="button" name="button">Survey add</button>
 </div>
+
+<ul>
+    {% for survey in survey_list %}
+    <li>{{ survey.title }} - <a href="{% url 'submission_list_aggregate' survey.pk %}">submissions</a></li>
+    {% endfor %}
+</ul>
 
 {% endblock content %}

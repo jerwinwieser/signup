@@ -114,8 +114,21 @@ class SubmissionListView(ListView):
         context = super().get_context_data(**kwargs)
         context['survey_list'] = models.Survey.objects.all()
         context['question_list'] = models.Question.objects.all()
-        # set = models.Submission.objects.all().values('question').annotate(total=Count('actor')).order_by('total')
         set = models.Submission.objects.all().values('question__survey__title').annotate(count=Count('hash', distinct=True))
         print(set)
         context['set_list'] = set
+        return context
+
+class SubmissionListViewAggregate(ListView):
+    model = models.Submission
+    template_name = 'core/submission_list_aggregate.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        surv_id = self.kwargs.get('surv_id')
+        context['survey_list'] = models.Survey.objects.all()
+        context['question_list'] = models.Question.objects.all()
+        set = models.Submission.objects.all().values('question__survey__title').annotate(count=Count('hash', distinct=True))
+        context['set_list'] = set
+        survey_set = models.Submission.objects.filter(question__survey__id=surv_id)
+        context['survey_set_list'] = survey_set
         return context

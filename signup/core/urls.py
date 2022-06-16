@@ -14,5 +14,6 @@ urlpatterns = [
     path('question/delete/<int:pk>', views.QuestionDeleteView.as_view(), name='question_delete'),
 
     path('submission/list/', views.SubmissionListView.as_view(), name='submission_list'),
+    path('submission/list/aggregate/<int:surv_id>/', views.SubmissionListViewAggregate.as_view(), name='submission_list_aggregate'),
     path('submission/create/<int:surv_id>/', views.submission_create, name='submission_create'),
 ]
