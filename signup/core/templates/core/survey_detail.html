@@ -34,6 +34,7 @@
 
 <div class="list-group mt-4">
     <a href="{% url 'submission_create' survey.pk %}" class="list-group-item list-group-item-action active">Submission add</a>
+    <a href="{% url 'submission_list_aggregate' survey.pk %}" class="list-group-item list-group-item-action active">Submission list</a>
 </div>
 
 <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>

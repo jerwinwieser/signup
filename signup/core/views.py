@@ -131,9 +131,10 @@ class SubmissionListViewAggregate(ListView):
         survey_set = models.Submission.objects.filter(question__survey__id=surv_id)
         survey_set_wide = pivot(survey_set, 'hash', 'question__text', 'answer')
 
-        survery_set_distinct = models.Submission.objects.filter(question__survey__id=surv_id).order_by('hash').values('hash').distinct()
-        survery_set_distinct_name = models.Survey.objects.filter(id=surv_id).order_by('title').values('title').distinct()
+        survery_set_distinct = models.Submission.objects.filter(question__survey__id=surv_id).values('hash', 'created_at').distinct()
+        survery_set_distinct_name = models.Survey.objects.filter(id=surv_id).values('title').distinct()
         print(survery_set_distinct_name)
+        print(survery_set_distinct)
 
         context['survery_set_distinct'] = survery_set_distinct
         context['survery_set_distinct_name'] = survery_set_distinct_name

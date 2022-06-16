@@ -22,10 +22,4 @@
     <button id="survey-create" class="list-group-item list-group-item-action active" type="button" name="button">Survey add</button>
 </div>
 
-<ul>
-    {% for survey in survey_list %}
-    <li>{{ survey.title }} - <a href="{% url 'submission_list_aggregate' survey.pk %}">submissions</a></li>
-    {% endfor %}
-</ul>
-
 {% endblock content %}
