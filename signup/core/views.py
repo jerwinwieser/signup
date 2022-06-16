@@ -1,3 +1,4 @@
+from urllib import request
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
@@ -99,6 +100,7 @@ def submission_create(request, surv_id):
                 question_id = question_pk[index]
                 question = models.Question.objects.get(id=question_id)
                 form.instance.hash = hash
+                form.instance.slug = hash
                 form.instance.question = question
                 form.save()
                 index += 1
@@ -116,7 +118,7 @@ class SubmissionListView(ListView):
         context = super().get_context_data(**kwargs)
         context['survey_list'] = models.Survey.objects.all()
         context['question_list'] = models.Question.objects.all()
-        set = models.Submission.objects.all().values('question__survey__title').annotate(count=Count('hash', distinct=True))
+        set = models.Submission.objects.all().values('question__survey__title').annotate(count=Count('slug', distinct=True))
         print(set)
         context['set_list'] = set
         return context
@@ -127,14 +129,14 @@ class SubmissionListViewAggregate(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         surv_id = self.kwargs.get('surv_id')
-        set = models.Submission.objects.all().values('question__survey__title').annotate(count=Count('hash', distinct=True))
+        set = models.Submission.objects.all().values('question__survey__title').annotate(count=Count('slug', distinct=True))
         survey_set = models.Submission.objects.filter(question__survey__id=surv_id)
-        survey_set_wide = pivot(survey_set, 'hash', 'question__text', 'answer')
 
-        survery_set_distinct = models.Submission.objects.filter(question__survey__id=surv_id).values('hash', 'created_at').distinct()
+        survery_set_distinct = models.Submission.objects.filter(question__survey__id=surv_id).values('slug').distinct()
         survery_set_distinct_name = models.Survey.objects.filter(id=surv_id).values('title').distinct()
-        print(survery_set_distinct_name)
-        print(survery_set_distinct)
+
+        for record in survery_set_distinct:
+            print(record)
 
         context['survery_set_distinct'] = survery_set_distinct
         context['survery_set_distinct_name'] = survery_set_distinct_name
@@ -143,5 +145,21 @@ class SubmissionListViewAggregate(ListView):
         context['question_list'] = models.Question.objects.all()
         context['set_list'] = set
         context['survey_set_list'] = survey_set
-        context['survey_set_list_wide'] = survey_set_wide
         return context
+
+# class SubmissionDetailView(DetailView):
+#     template_name = 'core/submission_detail.html'
+#     model = models.Submission
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         slug = self.kwargs.get('slug')
+#         submission = models.Submission.objects.filter(slug=slug)
+#         context['submission'] = submission
+#         return context
+
+def submission_detail(request, slug):
+    submission = models.Submission.objects.filter(slug=slug)
+    context = {
+        'submission': submission,
+    }
+    return render(request, 'core/submission_detail.html', context)

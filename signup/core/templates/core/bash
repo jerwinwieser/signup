@@ -1,5 +1,0 @@
-    # bash = models.CharField(max_length=10, default='defaulthash', unique=False)
-
-    # hash = hashlib.sha1()
-    # hash = 'abc123'
-    # print(hash)

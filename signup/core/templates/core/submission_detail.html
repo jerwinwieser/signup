@@ -4,4 +4,23 @@
 
 <h2 class="display-6 text-center mb-4">Submission Detail</h2>
 
+<div class="table-responsive">
+    <table class="table text-left">
+        <thead>
+            <tr>
+                <th style="width: 50%;">Question</th>
+                <th>Answer</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in submission %}
+            <tr>
+                <th scope="row" class="text-start">{{ record.question.text }}</th>
+                <td>{{ record.answer }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
 {% endblock content %}

@@ -7,10 +7,10 @@
 {% for survey in survery_set_distinct_name %}
 <div class="list-group mb-4">
     {% for submission in survery_set_distinct %}
-    <a href="#" class="list-group-item list-group-item-action">
+    <a href="{% url 'submission_detail' submission.slug %}" class="list-group-item list-group-item-action">
         <div class="d-flex w-100 justify-content-between">
-            <h5 class="mb-1">{{ submission.hash }}</h5>
-            <small class="text-muted"></small>{{ submission.created_at }}
+            <h5 class="mb-1">{{ submission.slug }}</h5>
+            <small class="text-muted">{{ submission.created_at }}99/99 2099, 99 pm</small>
         </div>
         <small class="text-muted">{{ survey.title }}</small>
     </a>
