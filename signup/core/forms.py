@@ -36,10 +36,3 @@ class SubmissionForm(forms.ModelForm):
             visible.field.widget.attrs['class'] = 'form-control'
             visible.field.widget.attrs['type'] = 'text'
             # visible.field.widget.attrs['placeholder'] = 'Placeholder'
-
-# SubmissionFormSet = formset_factory(
-#     SubmissionForm,
-#     extra=2,
-#     max_num=2,
-#     min_num=1
-# )

@@ -18,7 +18,7 @@ class Question(models.Model):
         (CHARFIELD, ("charfield")),
         (INTEGERFIELD, ("integerfield")),
     )
-    survey = models.ForeignKey(Survey, on_delete=models.CASCADE, null=True,  editable=False)
+    survey = models.ForeignKey(Survey, on_delete=models.CASCADE, null=True,  editable=True)
     type = models.CharField(max_length=200, choices=QUESTION_TYPES, default=CHARFIELD)
     text = models.CharField(max_length=2500)
     def __str__(self):

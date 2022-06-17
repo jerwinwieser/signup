@@ -60,7 +60,6 @@ class QuestionCreateView(BSModalCreateView):
     def get_initial(self):
         initial = super(QuestionCreateView, self).get_initial()
         initial['survey'] = self.kwargs.get('surv_id')
-        print(initial)
         return initial
 
 class QuestionListView(ListView):
