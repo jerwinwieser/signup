@@ -15,7 +15,7 @@
         <tbody>
             {% for record in submission %}
             <tr>
-                <th scope="row" class="text-start">{{ record.question.text }}</th>
+                <th scope="row" class="text-start">{{ record.question.text }} ({{ record.question.type }})</th>
                 <td>{{ record.answer }}</td>
             </tr>
             {% endfor %}
