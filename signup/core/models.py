@@ -1,9 +1,12 @@
 from django.db import models
 from django.utils import timezone
 
+survey_description = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
+
 #one user should be able to create multiple surveys
 class Survey(models.Model):
     title = models.CharField(max_length=255)
+    description = models.TextField(max_length=2500, default=survey_description)
     def __str__(self):
         return self.title
 

@@ -135,9 +135,6 @@ class SubmissionListViewAggregate(ListView):
         survery_set_distinct = models.Submission.objects.filter(question__survey__id=surv_id).values('slug').distinct()
         survery_set_distinct_name = models.Survey.objects.filter(id=surv_id).values('title').distinct()
 
-        for record in survery_set_distinct:
-            print(record)
-
         context['survery_set_distinct'] = survery_set_distinct
         context['survery_set_distinct_name'] = survery_set_distinct_name
 
@@ -146,16 +143,6 @@ class SubmissionListViewAggregate(ListView):
         context['set_list'] = set
         context['survey_set_list'] = survey_set
         return context
-
-# class SubmissionDetailView(DetailView):
-#     template_name = 'core/submission_detail.html'
-#     model = models.Submission
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         slug = self.kwargs.get('slug')
-#         submission = models.Submission.objects.filter(slug=slug)
-#         context['submission'] = submission
-#         return context
 
 def submission_detail(request, slug):
     submission = models.Submission.objects.filter(slug=slug)

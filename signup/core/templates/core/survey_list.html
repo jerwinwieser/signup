@@ -11,8 +11,8 @@
             <h5 class="mb-1">{{ survey.title }}</h5>
             <small class="text-muted">questions: {{ survey.question_set.count }}</small>
         </div>
-        <p class="mb-1">Some placeholder content in a paragraph.</p>
-        <small class="text-muted">And some muted small print.</small>
+        <p class="mb-1">Subtitle</p>
+        <small class="text-muted">{{ survey.description }}</small>
         <span class="badge bg-secondary rounded-pill">{{ survey.question.submission_set.count }}</span>
     </a>
     {% endfor %}
