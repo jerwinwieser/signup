@@ -5,7 +5,7 @@ from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.urls import reverse, reverse_lazy
 
-from django.forms import inlineformset_factory, modelformset_factory
+from django.forms import inlineformset_factory, modelformset_factory, formset_factory
 from django.shortcuts import render
 
 from core import models
@@ -82,6 +82,34 @@ class QuestionDeleteView(DeleteView):
     fields = '__all__'
     success_url = reverse_lazy(redirect_view)
 
+def question_create(request, surv_id):
+    ChoiceFormSet = formset_factory(forms.QuestionForm, extra=3,
+                                    min_num=2, validate_min=True)
+
+    if request.method == 'POST':
+        form = forms.TypeForm(request.POST)
+        formset = ChoiceFormSet(request.POST)
+        if all([form.is_valid(), formset.is_valid()]):
+            poll = form.save()
+            for inline_form in formset:
+                if inline_form.cleaned_data:
+                    choice = inline_form.save(commit=False)
+                    choice.question = poll
+                    choice.save()
+            return render(request, 'polls/index.html', {})
+    else:
+        form = PollForm()
+        formset = ChoiceFormSet()
+
+    context = {
+        'formset': formset,
+    }
+    return render(request, 'core/submission_create.html', context)
+
+
+    return render(request, 'polls/add_poll.html', {'form': form,
+                                                   'formset': formset})
+
 def submission_create(request, surv_id):
     questions = models.Question.objects.filter(survey_id=surv_id)
     SubmissionFormSet = modelformset_factory(models.Submission, form=forms.SubmissionForm, extra=questions.count())
@@ -149,3 +177,15 @@ def submission_detail(request, slug):
         'submission': submission,
     }
     return render(request, 'core/submission_detail.html', context)
+
+# def submission_create(request, surv_id):
+#     form = forms.SubmissionForm()
+#     if request.method == 'POST':
+#         form = form(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return render(request, 'core/submission_list.html')
+#     context = {
+#         'form': form,
+#     }
+#     return render(request, 'core/submission_create.html', context)
