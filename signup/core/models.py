@@ -10,12 +10,14 @@ class Survey(models.Model):
         return self.title
 
 class Question(models.Model):
+    TEXT = "text"
+    SHORT_TEXT = "short-text"
     QUESTION_TYPES = (
-        ('char_field', 'char_field'),
-        ('text_field', 'text_field'),
+        (TEXT, "text (multiple line)"),
+        (SHORT_TEXT, "short text (one line)"),
     )
     survey = models.ForeignKey(Survey, on_delete=models.CASCADE, null=True,  editable=True)
-    type = models.CharField(max_length=255, choices=QUESTION_TYPES, default='text_field')
+    type = models.CharField(max_length=255, choices=QUESTION_TYPES, default='TextField')
     text = models.TextField(max_length=2550)
     def __str__(self):
         return self.text

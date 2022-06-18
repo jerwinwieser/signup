@@ -35,7 +35,7 @@ class SurveyCreateView(BSModalCreateView):
     template_name = 'core/survey_create.html'
     form_class = forms.SurveyForm
     model = models.Survey
-    success_message = 'Success: Book was created.'
+    success_message = 'Success: survey was created.'
     success_url = reverse_lazy(redirect_view)
 
 class SurveyUpdateView(BSModalUpdateView):
@@ -62,6 +62,7 @@ class QuestionCreateView(BSModalCreateView):
     template_name = 'core/question_create.html'
     form_class = forms.QuestionForm
     model = models.Question
+    success_message = 'Success: question was created.'
     success_url = reverse_lazy(redirect_view)
     def get_initial(self):
         initial = super(QuestionCreateView, self).get_initial()

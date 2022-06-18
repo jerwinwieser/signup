@@ -15,12 +15,29 @@ class SurveyForm(BSModalModelForm):
             visible.field.widget.attrs['type'] = 'text'
             visible.field.widget.attrs['placeholder'] = 'Placeholder'
 
-class QuestionForm(forms.ModelForm):
+class QuestionForm(BSModalModelForm):
     class Meta:
         model = models.Question
         fields = '__all__'
+
+FIELDS = {
+    models.Question.TEXT: forms.CharField,
+    models.Question.SHORT_TEXT: forms.CharField,
+}
+WIDGETS = {
+    models.Question.TEXT: forms.Textarea,
+    models.Question.SHORT_TEXT: forms.TextInput,
+}
 
 class SubmissionForm(forms.ModelForm):
     class Meta:
         model = models.Submission
         fields = '__all__'
+    def get_question_widget(self, question):
+        """Return the widget we should use for a question.
+        :param Question question: The question
+        :rtype: django.forms.widget or None"""
+        try:
+            return self.WIDGETS[question.type]
+        except KeyError:
+            return None

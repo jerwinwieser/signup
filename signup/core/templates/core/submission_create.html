@@ -10,6 +10,7 @@
 
     <div class="form-group">
     {% for form in formset %}
+    <br>
     ({{ question_type|index:forloop.counter0 }}) {{ question_text|index:forloop.counter0 }}<br>
         {% for field in form %}
             {{ field }}
