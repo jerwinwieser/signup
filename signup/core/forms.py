@@ -19,38 +19,8 @@ class QuestionForm(forms.ModelForm):
     class Meta:
         model = models.Question
         fields = '__all__'
-    def __init__(self, *args, **kwargs):
-        super(QuestionForm, self).__init__(*args, **kwargs)
-        for visible in self.visible_fields():
-            visible.field.widget.attrs['class'] = 'form-control'
-            visible.field.widget.attrs['type'] = 'text'
-
-class TypeForm(forms.ModelForm):
-    class Meta:
-        model = models.Type
-        fields = '__all__'
-    def __init__(self, *args, **kwargs):
-        super(QuestionForm, self).__init__(*args, **kwargs)
-        for visible in self.visible_fields():
-            visible.field.widget.attrs['class'] = 'form-control'
-            visible.field.widget.attrs['type'] = 'text'
 
 class SubmissionForm(forms.ModelForm):
     class Meta:
         model = models.Submission
         fields = '__all__'
-    def __init__(self, *args, **kwargs):
-        super(SubmissionForm, self).__init__(*args, **kwargs)
-        for visible in self.visible_fields():
-            visible.field.widget.attrs['class'] = 'form-control'
-            visible.field.widget.attrs['type'] = 'text'
-
-# class SubmissionForm(forms.Form):
-#     CITIES = (
-#         (1, 'lisbon'),
-#         (2, 'amsterdam'),
-#         (3, 'fortaleza'),
-#     )
-#     name = forms.CharField(max_length=2550)
-#     age = forms.IntegerField()
-#     city = forms.ChoiceField(choices=CITIES)

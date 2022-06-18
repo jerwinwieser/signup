@@ -21,6 +21,9 @@ from django_pivot.histogram import histogram
 
 redirect_view = 'survey_list'
 
+#############
+#############
+#############
 class SurveyListView(ListView):
     model = models.Survey
     def get_context_data(self, **kwargs):
@@ -52,6 +55,9 @@ class SurveyDetailView(DetailView):
     template_name = 'core/survey_detail.html'
     model = models.Survey
 
+#############
+#############
+#############
 class QuestionCreateView(BSModalCreateView):
     template_name = 'core/question_create.html'
     form_class = forms.QuestionForm
@@ -59,7 +65,8 @@ class QuestionCreateView(BSModalCreateView):
     success_url = reverse_lazy(redirect_view)
     def get_initial(self):
         initial = super(QuestionCreateView, self).get_initial()
-        initial['survey'] = self.kwargs.get('surv_id')
+        surv_id = self.kwargs.get('surv_id')
+        initial['survey'] = surv_id
         return initial
 
 class QuestionListView(ListView):
@@ -82,63 +89,9 @@ class QuestionDeleteView(DeleteView):
     fields = '__all__'
     success_url = reverse_lazy(redirect_view)
 
-def question_create(request, surv_id):
-    ChoiceFormSet = formset_factory(forms.QuestionForm, extra=3,
-                                    min_num=2, validate_min=True)
-
-    if request.method == 'POST':
-        form = forms.TypeForm(request.POST)
-        formset = ChoiceFormSet(request.POST)
-        if all([form.is_valid(), formset.is_valid()]):
-            poll = form.save()
-            for inline_form in formset:
-                if inline_form.cleaned_data:
-                    choice = inline_form.save(commit=False)
-                    choice.question = poll
-                    choice.save()
-            return render(request, 'polls/index.html', {})
-    else:
-        form = PollForm()
-        formset = ChoiceFormSet()
-
-    context = {
-        'formset': formset,
-    }
-    return render(request, 'core/submission_create.html', context)
-
-
-    return render(request, 'polls/add_poll.html', {'form': form,
-                                                   'formset': formset})
-
-def submission_create(request, surv_id):
-    questions = models.Question.objects.filter(survey_id=surv_id)
-    SubmissionFormSet = modelformset_factory(models.Submission, form=forms.SubmissionForm, extra=questions.count())
-    initial_values = [{'question': id} for id in questions.values_list('pk', flat=True)]
-    formset = SubmissionFormSet(queryset=models.Submission.objects.none(), initial=initial_values)
-    question_pk = questions.values_list('pk', flat=True)
-    question_text = questions.values_list('text', flat=True)
-    question_type = questions.values_list('type', flat=True)
-    hash = uuid.uuid4().hex
-    if request.method == 'POST':
-        formset = SubmissionFormSet(request.POST)
-        if formset.is_valid():
-            index = 0
-            for form in formset:
-                question_id = question_pk[index]
-                question = models.Question.objects.get(id=question_id)
-                form.instance.hash = hash
-                form.instance.slug = hash
-                form.instance.question = question
-                form.save()
-                index += 1
-            return render(request, 'core/submission_list.html')
-    context = {
-        'question_text': question_text,
-        'question_type': question_type,
-        'formset': formset,
-    }
-    return render(request, 'core/submission_create.html', context)
-
+#############
+#############
+#############
 class SubmissionListView(ListView):
     model = models.Submission
     def get_context_data(self, **kwargs):
@@ -178,14 +131,31 @@ def submission_detail(request, slug):
     }
     return render(request, 'core/submission_detail.html', context)
 
-# def submission_create(request, surv_id):
-#     form = forms.SubmissionForm()
-#     if request.method == 'POST':
-#         form = form(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return render(request, 'core/submission_list.html')
-#     context = {
-#         'form': form,
-#     }
-#     return render(request, 'core/submission_create.html', context)
+def submission_create(request, surv_id):
+    questions = models.Question.objects.filter(survey_id=surv_id)
+    SubmissionFormSet = modelformset_factory(models.Submission, form=forms.SubmissionForm, extra=questions.count())
+    initial_values = [{'question': id} for id in questions.values_list('pk', flat=True)]
+    formset = SubmissionFormSet(queryset=models.Submission.objects.none(), initial=initial_values)
+    question_pk = questions.values_list('pk', flat=True)
+    question_text = questions.values_list('text', flat=True)
+    question_type = questions.values_list('type', flat=True)
+    hash = uuid.uuid4().hex
+    if request.method == 'POST':
+        formset = SubmissionFormSet(request.POST)
+        if formset.is_valid():
+            index = 0
+            for form in formset:
+                question_id = question_pk[index]
+                question = models.Question.objects.get(id=question_id)
+                form.instance.hash = hash
+                form.instance.slug = hash
+                form.instance.question = question
+                form.save()
+                index += 1
+            return render(request, 'core/submission_list.html')
+    context = {
+        'question_text': question_text,
+        'question_type': question_type,
+        'formset': formset,
+    }
+    return render(request, 'core/submission_create.html', context)
